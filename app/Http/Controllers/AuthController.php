@@ -7,8 +7,8 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    //
 
+//ログイン
 public function login(Request $request)
 {
     // 1. バリデーション
@@ -28,4 +28,19 @@ public function login(Request $request)
     return response()->json(['message' => 'ログイン失敗'], 401);
 }
 
+//ログアウト
+public function logout(Request $request)
+{
+    Auth::guard('web')->logout();           // 認証解除
+    $request->session()->invalidate();       // セッション破棄
+    $request->session()->regenerateToken();  // セキュリティ用トークン再生成
+
+    return response()->json(['message' => 'ログアウトしました']);
+}
+
+public function me(Request $request)
+{
+ return response()->json(Auth::user());
+
+}
 }
