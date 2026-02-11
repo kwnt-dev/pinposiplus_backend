@@ -8,7 +8,7 @@ use App\Http\Controllers\RainCellController;
 use App\Http\Controllers\PinController;
 use App\Http\Controllers\PinHistoryController;
 use App\Http\Controllers\UserController;
-
+use App\Http\Controllers\DailyScheduleController;
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -42,4 +42,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/users', [UserController::class, 'store']);
     Route::put('/users/{id}', [UserController::class, 'update']);
     Route::delete('/users/{id}', [UserController::class, 'destroy']);
+
+    // スケジュール
+    Route::get('/schedules', [DailyScheduleController::class, 'index']);
+    Route::post('/schedules', [DailyScheduleController::class, 'store']);
+    Route::put('/schedules/{id}', [DailyScheduleController::class, 'update']);
+    Route::delete('/schedules/{id}', [DailyScheduleController::class, 'destroy']);
 });
