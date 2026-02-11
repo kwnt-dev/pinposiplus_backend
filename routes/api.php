@@ -7,6 +7,8 @@ use App\Http\Controllers\BanCellController;
 use App\Http\Controllers\RainCellController;
 use App\Http\Controllers\PinController;
 use App\Http\Controllers\PinHistoryController;
+use App\Http\Controllers\UserController;
+
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -34,4 +36,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // ピン履歴
     Route::get('/pin-histories', [PinHistoryController::class, 'index']);
+
+    // ユーザー管理
+    Route::get('/users', [UserController::class, 'index']);
+    Route::post('/users', [UserController::class, 'store']);
+    Route::put('/users/{id}', [UserController::class, 'update']);
+    Route::delete('/users/{id}', [UserController::class, 'destroy']);
 });
