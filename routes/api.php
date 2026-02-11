@@ -5,6 +5,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DamageCellController;
 use App\Http\Controllers\BanCellController;
 use App\Http\Controllers\RainCellController;
+use App\Http\Controllers\PinController;
+use App\Http\Controllers\PinHistoryController;
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -24,4 +26,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/rain-cells', [RainCellController::class, 'index']);
     Route::post('/rain-cells', [RainCellController::class, 'store']);
     Route::delete('/rain-cells/{id}', [RainCellController::class, 'destroy']);
+
+    // ピン
+    Route::get('/pins', [PinController::class, 'index']);
+    Route::post('/pins', [PinController::class, 'store']);
+    Route::delete('/pins/{id}', [PinController::class, 'destroy']);
+
+    // ピン履歴
+    Route::get('/pin-histories', [PinHistoryController::class, 'index']);
 });
