@@ -11,15 +11,15 @@ class DatabaseSeeder extends Seeder
     {
         User::create([
             'name' => '管理者',
-            'email' => 'admin@example.com',
-            'password' => 'password',
+            'email' => 'admin@gmail.com',
+            'password' => 'admin',
             'role' => 'admin',
         ]);
 
         User::create([
             'name' => 'スタッフ',
-            'email' => 'staff@example.com',
-            'password' => 'password',
+            'email' => 'staff@gmail.com',
+            'password' => 'staff',
             'role' => 'staff',
         ]);
     }
