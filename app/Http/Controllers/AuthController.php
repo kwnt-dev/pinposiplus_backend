@@ -2,45 +2,65 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
     // ログイン
-    public function login(Request $request)
+    public function login(Request $request): JsonResponse
     {
-        // 1. バリデーション
         $validated = $request->validate([
             'email' => 'required|email',
             'password' => 'required',
         ]);
 
-        // 2. 認証
-        if (Auth::attempt($validated)) {
-            // 3. 認証成功：セッション再生成
-            $request->session()->regenerate();
+        $user = User::where('email', $validated['email'])->first();
 
-            return response()->json(Auth::user());
+        if (! $user || ! Hash::check($validated['password'], $user->password)) {
+            throw ValidationException::withMessages([
+                'email' => ['認証情報が正しくありません。'],
+            ]);
         }
 
-        // 4. 認証失敗
-        return response()->json(['message' => 'ログイン失敗'], 401);
+        // 既存トークン削除（1デバイス1トークン）
+        $user->tokens()->delete();
+
+        // トークン発行
+        $token = $user->createToken('auth-token')->plainTextToken;
+
+        return response()->json([
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'role' => $user->role,
+            ],
+            'token' => $token,
+        ]);
     }
 
     // ログアウト
-    public function logout(Request $request)
+    public function logout(Request $request): JsonResponse
     {
-        Auth::guard('web')->logout();           // 認証解除
-        $request->session()->invalidate();       // セッション破棄
-        $request->session()->regenerateToken();  // セキュリティ用トークン再生成
+        $request->user()->currentAccessToken()->delete();
 
         return response()->json(['message' => 'ログアウトしました']);
     }
 
-    public function me(Request $request)
+    // 現在のユーザー情報
+    public function me(Request $request): JsonResponse
     {
-        return response()->json(Auth::user());
+        $user = $request->user();
 
+        return response()->json([
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'role' => $user->role,
+        ]);
     }
 }
