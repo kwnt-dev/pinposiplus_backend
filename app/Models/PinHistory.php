@@ -18,5 +18,6 @@ class PinHistory extends Model
         'hole_number',
         'x',
         'y',
+        'submitted_by',
     ];
 }
