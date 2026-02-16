@@ -11,7 +11,7 @@ class PinHistory extends Model
 
     const UPDATED_AT = null;
 
-    protected $table = 'pin_histories';
+    protected $table = 'pin_history';
 
     protected $fillable = [
         'date',
