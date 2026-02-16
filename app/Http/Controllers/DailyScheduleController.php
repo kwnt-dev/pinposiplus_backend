@@ -15,7 +15,16 @@ class DailyScheduleController extends Controller
             $query->where('date', $request->date);
         }
 
+        if ($request->start_date) {
+            $query->where('date', '>=', $request->start_date);
+        }
+
+        if ($request->end_date) {
+            $query->where('date', '<=', $request->end_date);
+        }
+
         $schedules = $query->orderBy('date', 'asc')->get();
+
         return response()->json($schedules);
     }
 
@@ -23,12 +32,13 @@ class DailyScheduleController extends Controller
     {
         $validated = $request->validate([
             'date' => 'required|date|unique:daily_schedules',
-            'event_name' => 'required|string|max:255',
-            'group_count' => 'required|integer|min:1',
+            'event_name' => 'nullable|string|max:255',
+            'group_count' => 'nullable|integer|min:1',
             'notes' => 'nullable|string',
         ]);
 
         $schedule = DailySchedule::create($validated);
+
         return response()->json($schedule, 201);
     }
 
@@ -37,13 +47,14 @@ class DailyScheduleController extends Controller
         $schedule = DailySchedule::findOrFail($id);
 
         $validated = $request->validate([
-            'date' => 'sometimes|date|unique:daily_schedules,date,' . $schedule->id,
+            'date' => 'sometimes|date|unique:daily_schedules,date,'.$schedule->id,
             'event_name' => 'sometimes|string|max:255',
             'group_count' => 'sometimes|integer|min:1',
             'notes' => 'nullable|string',
         ]);
 
         $schedule->update($validated);
+
         return response()->json($schedule);
     }
 
@@ -51,6 +62,7 @@ class DailyScheduleController extends Controller
     {
         $schedule = DailySchedule::findOrFail($id);
         $schedule->delete();
+
         return response()->json(['message' => '削除しました']);
     }
 }
