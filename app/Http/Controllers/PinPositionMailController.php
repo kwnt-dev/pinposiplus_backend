@@ -2,20 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SendPinPositionMailRequest;
 use App\Mail\PinPositionMail;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class PinPositionMailController extends Controller
 {
-    public function send(Request $request)
+    public function send(SendPinPositionMailRequest $request)
     {
-        $validated = $request->validate([
-            'date' => 'required|string',
-            'pdf_url' => 'required|url',
-            'to' => 'required|email',
-        ]);
+        $validated = $request->validated();
 
         try {
             Mail::to($validated['to'])->send(
