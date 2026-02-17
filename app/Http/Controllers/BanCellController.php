@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreBanCellRequest;
 use App\Models\BanCell;
 use Illuminate\Http\Request;
 
@@ -14,13 +15,9 @@ class BanCellController extends Controller
         return response()->json($cells);
     }
 
-    public function store(Request $request)
+    public function store(StoreBanCellRequest $request)
     {
-        $validated = $request->validate([
-            'hole_number' => 'required|integer|between:1,18',
-            'x' => 'required|integer',
-            'y' => 'required|integer',
-        ]);
+        $validated = $request->validated();
 
         $cell = BanCell::create($validated);
 

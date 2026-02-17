@@ -2,33 +2,33 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreRainCellRequest;
 use App\Models\RainCell;
+use Illuminate\Http\Request;
 
 class RainCellController extends Controller
 {
     public function index(Request $request)
-{
-    $cells = RainCell::where('hole_number', $request->hole_number)->get();
-    return response()->json($cells);
-}
+    {
+        $cells = RainCell::where('hole_number', $request->hole_number)->get();
 
-public function store(Request $request)
-{
-    $validated = $request->validate([
-        'hole_number' => 'required|integer|between:1,18',
-        'x' => 'required|integer',
-        'y' => 'required|integer',
-    ]);
+        return response()->json($cells);
+    }
 
-    $cell = RainCell::create($validated);
-    return response()->json($cell, 201);
-}
+    public function store(StoreRainCellRequest $request)
+    {
+        $validated = $request->validated();
 
-public function destroy(string $id)
-{
-    $cell = RainCell::findOrFail($id);
-    $cell->delete();
-    return response()->json(['message' => '削除しました']);
-}
+        $cell = RainCell::create($validated);
+
+        return response()->json($cell, 201);
+    }
+
+    public function destroy(string $id)
+    {
+        $cell = RainCell::findOrFail($id);
+        $cell->delete();
+
+        return response()->json(['message' => '削除しました']);
+    }
 }
