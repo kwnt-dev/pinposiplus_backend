@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreDailyScheduleRequest;
+use App\Http\Requests\UpdateDailyScheduleRequest;
 use App\Models\DailySchedule;
 use Illuminate\Http\Request;
 
@@ -28,31 +30,18 @@ class DailyScheduleController extends Controller
         return response()->json($schedules);
     }
 
-    public function store(Request $request)
+    public function store(StoreDailyScheduleRequest $request)
     {
-        $validated = $request->validate([
-            'date' => 'required|date|unique:daily_schedules',
-            'event_name' => 'nullable|string|max:255',
-            'group_count' => 'nullable|integer|min:1',
-            'notes' => 'nullable|string',
-        ]);
-
+        $validated = $request->validated();
         $schedule = DailySchedule::create($validated);
 
         return response()->json($schedule, 201);
     }
 
-    public function update(Request $request, string $id)
+    public function update(UpdateDailyScheduleRequest $request, string $id)
     {
         $schedule = DailySchedule::findOrFail($id);
-
-        $validated = $request->validate([
-            'date' => 'sometimes|date|unique:daily_schedules,date,'.$schedule->id,
-            'event_name' => 'sometimes|string|max:255',
-            'group_count' => 'sometimes|integer|min:1',
-            'notes' => 'nullable|string',
-        ]);
-
+        $validated = $request->validated();
         $schedule->update($validated);
 
         return response()->json($schedule);
