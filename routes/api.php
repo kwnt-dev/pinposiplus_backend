@@ -1,20 +1,22 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\DamageCellController;
+use App\Http\Controllers\AutoSuggestController;
 use App\Http\Controllers\BanCellController;
-use App\Http\Controllers\RainCellController;
+use App\Http\Controllers\DailyScheduleController;
+use App\Http\Controllers\DamageCellController;
 use App\Http\Controllers\PinController;
 use App\Http\Controllers\PinHistoryController;
+use App\Http\Controllers\RainCellController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\DailyScheduleController;
+use Illuminate\Support\Facades\Route;
 
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
+    Route::get('/auto-suggest-data', [AutoSuggestController::class, 'index']);
 
     // ピン（全員）
     Route::get('/pins', [PinController::class, 'index']);
