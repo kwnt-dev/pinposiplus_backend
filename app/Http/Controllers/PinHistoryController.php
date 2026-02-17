@@ -19,7 +19,8 @@ class PinHistoryController extends Controller
             $query->where('date', $request->date);
         }
 
-        $histories = $query->orderBy('date', 'desc')->get();
+        $histories = $query->with('submitter:id,name')->orderBy('date', 'desc')->get();
+
         return response()->json($histories);
     }
 }
