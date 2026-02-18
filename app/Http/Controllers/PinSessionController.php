@@ -83,4 +83,55 @@ class PinSessionController extends Controller
 
         return response()->json(['message' => 'セッションを削除しました']);
     }
+
+    public function check(Request $request, string $id): JsonResponse
+    {
+        $session = PinSession::findOrFail($id);
+
+        $session->update([
+            'status' => 'checked',
+        ]);
+
+        return response()->json($session);
+    }
+
+    public function publish(string $id): JsonResponse
+    {
+        $session = PinSession::findOrFail($id);
+
+        $session->update([
+            'status' => 'published',
+            'published_at' => now(),
+        ]);
+
+        return response()->json($session);
+    }
+
+    public function confirm(Request $request, string $id): JsonResponse
+    {
+        $session = PinSession::findOrFail($id);
+        $user = $request->user();
+
+        $session->update([
+            'status' => 'confirmed',
+            'submitted_at' => now(),
+            'submitted_by' => $user->id,
+            'submitted_by_name' => $user->name,
+        ]);
+
+        return response()->json($session);
+    }
+
+    public function approve(Request $request, string $id): JsonResponse
+    {
+        $session = PinSession::findOrFail($id);
+
+        $session->update([
+            'status' => 'approved',
+            'approved_at' => now(),
+            'approved_by' => $request->user()->name,
+        ]);
+
+        return response()->json($session);
+    }
 }
