@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PinHistory;
 use App\Models\PinSession;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -133,5 +134,41 @@ class PinSessionController extends Controller
         ]);
 
         return response()->json($session);
+    }
+
+    public function send(string $id): JsonResponse
+    {
+        $session = PinSession::findOrFail($id);
+
+        $this->savePinsToHistory($session);
+
+        $session->update([
+            'status' => 'sent',
+        ]);
+
+        return response()->json($session);
+    }
+
+    private function savePinsToHistory(PinSession $session): void
+    {
+        $targetDate = $session->target_date
+            ? date('Y-m-d', strtotime($session->target_date))
+            : date('Y-m-d');
+
+        $pins = $session->pins;
+
+        foreach ($pins as $pin) {
+            PinHistory::where('hole_number', $pin->hole_number)
+                ->where('date', $targetDate)
+                ->delete();
+
+            PinHistory::create([
+                'hole_number' => $pin->hole_number,
+                'x' => $pin->x,
+                'y' => $pin->y,
+                'date' => $targetDate,
+                'submitted_by' => $session->submitted_by,
+            ]);
+        }
     }
 }
