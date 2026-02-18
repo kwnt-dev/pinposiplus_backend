@@ -17,6 +17,7 @@ class StorePinRequest extends FormRequest
             'hole_number' => 'required|integer|between:1,18',
             'x' => 'required|integer',
             'y' => 'required|integer',
+            'session_id' => 'nullable|uuid',
         ];
     }
 }
