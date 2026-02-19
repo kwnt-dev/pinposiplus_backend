@@ -40,6 +40,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/pin-sessions', [PinSessionController::class, 'index']);
     Route::get('/pin-sessions/{id}', [PinSessionController::class, 'show']);
 
+    // セッション確認提出（staff + admin）
+    Route::patch('/pin-sessions/{id}/confirm', [PinSessionController::class, 'confirm']);
+
     // admin専用
     Route::middleware('admin')->group(function () {
         // ユーザー管理
@@ -70,7 +73,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/pin-sessions/{id}', [PinSessionController::class, 'destroy']);
         Route::patch('/pin-sessions/{id}/check', [PinSessionController::class, 'check']);
         Route::patch('/pin-sessions/{id}/publish', [PinSessionController::class, 'publish']);
-        Route::patch('/pin-sessions/{id}/confirm', [PinSessionController::class, 'confirm']);
         Route::patch('/pin-sessions/{id}/approve', [PinSessionController::class, 'approve']);
         Route::patch('/pin-sessions/{id}/send', [PinSessionController::class, 'send']);
     });
