@@ -9,6 +9,34 @@ use Illuminate\Http\Request;
 
 class PinSessionController extends Controller
 {
+    /**
+     * ステータス遷移ルール
+     * key: 遷移先, value: 許可される遷移元
+     */
+    private const STATUS_TRANSITIONS = [
+        'checked' => 'draft',
+        'published' => 'checked',
+        'confirmed' => 'published',
+        'approved' => 'confirmed',
+        'sent' => 'approved',
+    ];
+
+    /**
+     * ステータス遷移バリデーション
+     */
+    private function validateTransition(PinSession $session, string $nextStatus): ?JsonResponse
+    {
+        $expectedCurrent = self::STATUS_TRANSITIONS[$nextStatus] ?? null;
+
+        if ($expectedCurrent && $session->status !== $expectedCurrent) {
+            return response()->json([
+                'message' => "ステータスを {$session->status} から {$nextStatus} に変更できません（現在のステータスが {$expectedCurrent} である必要があります）",
+            ], 422);
+        }
+
+        return null;
+    }
+
     public function index(Request $request): JsonResponse
     {
         $query = PinSession::query();
@@ -89,6 +117,10 @@ class PinSessionController extends Controller
     {
         $session = PinSession::findOrFail($id);
 
+        if ($error = $this->validateTransition($session, 'checked')) {
+            return $error;
+        }
+
         $session->update([
             'status' => 'checked',
         ]);
@@ -99,6 +131,10 @@ class PinSessionController extends Controller
     public function publish(string $id): JsonResponse
     {
         $session = PinSession::findOrFail($id);
+
+        if ($error = $this->validateTransition($session, 'published')) {
+            return $error;
+        }
 
         $session->update([
             'status' => 'published',
@@ -111,6 +147,11 @@ class PinSessionController extends Controller
     public function confirm(Request $request, string $id): JsonResponse
     {
         $session = PinSession::findOrFail($id);
+
+        if ($error = $this->validateTransition($session, 'confirmed')) {
+            return $error;
+        }
+
         $user = $request->user();
 
         $session->update([
@@ -127,6 +168,10 @@ class PinSessionController extends Controller
     {
         $session = PinSession::findOrFail($id);
 
+        if ($error = $this->validateTransition($session, 'approved')) {
+            return $error;
+        }
+
         $session->update([
             'status' => 'approved',
             'approved_at' => now(),
@@ -139,6 +184,10 @@ class PinSessionController extends Controller
     public function send(string $id): JsonResponse
     {
         $session = PinSession::findOrFail($id);
+
+        if ($error = $this->validateTransition($session, 'sent')) {
+            return $error;
+        }
 
         $this->savePinsToHistory($session);
 
