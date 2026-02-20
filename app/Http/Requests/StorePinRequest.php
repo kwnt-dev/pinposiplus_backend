@@ -15,8 +15,8 @@ class StorePinRequest extends FormRequest
     {
         return [
             'hole_number' => 'required|integer|between:1,18',
-            'x' => 'required|integer',
-            'y' => 'required|integer',
+            'x' => 'required|numeric',
+            'y' => 'required|numeric',
             'session_id' => 'nullable|uuid',
         ];
     }
