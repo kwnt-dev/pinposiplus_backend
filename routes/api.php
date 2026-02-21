@@ -3,13 +3,16 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AutoSuggestController;
 use App\Http\Controllers\BanCellController;
+use App\Http\Controllers\BanCellGroupController;
 use App\Http\Controllers\DailyScheduleController;
 use App\Http\Controllers\DamageCellController;
+use App\Http\Controllers\DamageCellGroupController;
 use App\Http\Controllers\PinController;
 use App\Http\Controllers\PinHistoryController;
 use App\Http\Controllers\PinPositionMailController;
 use App\Http\Controllers\PinSessionController;
 use App\Http\Controllers\RainCellController;
+use App\Http\Controllers\RainCellGroupController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -32,6 +35,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/ban-cells', [BanCellController::class, 'index']);
     Route::get('/rain-cells', [RainCellController::class, 'index']);
     Route::get('/schedules', [DailyScheduleController::class, 'index']);
+
+    // セルグループ（参照は全員）
+    Route::get('/damage-cell-groups', [DamageCellGroupController::class, 'index']);
+    Route::get('/ban-cell-groups', [BanCellGroupController::class, 'index']);
+    Route::get('/rain-cell-groups', [RainCellGroupController::class, 'index']);
 
     // 自動提案データ（全員）
     Route::get('/auto-suggest-data', [AutoSuggestController::class, 'index']);
@@ -58,6 +66,14 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/ban-cells/{id}', [BanCellController::class, 'destroy']);
         Route::post('/rain-cells', [RainCellController::class, 'store']);
         Route::delete('/rain-cells/{id}', [RainCellController::class, 'destroy']);
+
+        // セルグループ編集
+        Route::post('/damage-cell-groups', [DamageCellGroupController::class, 'store']);
+        Route::delete('/damage-cell-groups/{id}', [DamageCellGroupController::class, 'destroy']);
+        Route::post('/ban-cell-groups', [BanCellGroupController::class, 'store']);
+        Route::delete('/ban-cell-groups/{id}', [BanCellGroupController::class, 'destroy']);
+        Route::post('/rain-cell-groups', [RainCellGroupController::class, 'store']);
+        Route::delete('/rain-cell-groups/{id}', [RainCellGroupController::class, 'destroy']);
 
         // スケジュール編集
         Route::post('/schedules', [DailyScheduleController::class, 'store']);

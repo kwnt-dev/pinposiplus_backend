@@ -4,23 +4,21 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class RainCell extends Model
+class RainCellGroup extends Model
 {
     use HasUuids;
 
     const UPDATED_AT = null;
 
     protected $fillable = [
-        'group_id',
         'hole_number',
-        'x',
-        'y',
+        'comment',
     ];
 
-    public function group(): BelongsTo
+    public function cells(): HasMany
     {
-        return $this->belongsTo(RainCellGroup::class, 'group_id');
+        return $this->hasMany(RainCell::class, 'group_id');
     }
 }
