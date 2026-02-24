@@ -14,8 +14,7 @@ class PinSessionController extends Controller
      * key: 遷移先, value: 許可される遷移元
      */
     private const STATUS_TRANSITIONS = [
-        'checked' => 'draft',
-        'published' => 'checked',
+        'published' => 'draft',
         'confirmed' => 'published',
         'approved' => 'confirmed',
         'sent' => 'approved',
@@ -97,7 +96,7 @@ class PinSessionController extends Controller
         $validated = $request->validate([
             'event_name' => 'nullable|string',
             'groups_count' => 'nullable|integer',
-            'status' => 'nullable|in:draft,checked,published,confirmed,approved,sent',
+            'status' => 'nullable|in:draft,published,confirmed,approved,sent',
         ]);
 
         $session->update($validated);
@@ -111,21 +110,6 @@ class PinSessionController extends Controller
         $session->delete();
 
         return response()->json(['message' => 'セッションを削除しました']);
-    }
-
-    public function check(Request $request, string $id): JsonResponse
-    {
-        $session = PinSession::findOrFail($id);
-
-        if ($error = $this->validateTransition($session, 'checked')) {
-            return $error;
-        }
-
-        $session->update([
-            'status' => 'checked',
-        ]);
-
-        return response()->json($session);
     }
 
     public function publish(string $id): JsonResponse
