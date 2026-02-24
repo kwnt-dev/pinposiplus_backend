@@ -88,7 +88,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/pin-sessions/{id}', [PinSessionController::class, 'update']);
         Route::delete('/pin-sessions/{id}', [PinSessionController::class, 'destroy']);
         Route::patch('/pin-sessions/{id}/publish', [PinSessionController::class, 'publish']);
-        Route::patch('/pin-sessions/{id}/approve', [PinSessionController::class, 'approve']);
         Route::patch('/pin-sessions/{id}/send', [PinSessionController::class, 'send']);
     });
 });

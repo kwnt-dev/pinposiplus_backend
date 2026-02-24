@@ -16,8 +16,7 @@ class PinSessionController extends Controller
     private const STATUS_TRANSITIONS = [
         'published' => 'draft',
         'confirmed' => 'published',
-        'approved' => 'confirmed',
-        'sent' => 'approved',
+        'sent' => 'confirmed',
     ];
 
     /**
@@ -96,7 +95,7 @@ class PinSessionController extends Controller
         $validated = $request->validate([
             'event_name' => 'nullable|string',
             'groups_count' => 'nullable|integer',
-            'status' => 'nullable|in:draft,published,confirmed,approved,sent',
+            'status' => 'nullable|in:draft,published,confirmed,sent',
         ]);
 
         $session->update($validated);
@@ -143,23 +142,6 @@ class PinSessionController extends Controller
             'submitted_at' => now(),
             'submitted_by' => $user->id,
             'submitted_by_name' => $user->name,
-        ]);
-
-        return response()->json($session);
-    }
-
-    public function approve(Request $request, string $id): JsonResponse
-    {
-        $session = PinSession::findOrFail($id);
-
-        if ($error = $this->validateTransition($session, 'approved')) {
-            return $error;
-        }
-
-        $session->update([
-            'status' => 'approved',
-            'approved_at' => now(),
-            'approved_by' => $request->user()->name,
         ]);
 
         return response()->json($session);
