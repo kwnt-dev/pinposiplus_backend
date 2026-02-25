@@ -22,5 +22,12 @@ class DatabaseSeeder extends Seeder
             'password' => 'staff',
             'role' => 'staff',
         ]);
+
+        $this->call([
+            DamageCellSeeder::class,
+            BanCellSeeder::class,
+            RainCellSeeder::class,
+            DailyScheduleSeeder::class,
+        ]);
     }
 }
