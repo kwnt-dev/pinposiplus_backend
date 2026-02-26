@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\PinPositionMail;
 use App\Models\PinHistory;
 use App\Models\PinSession;
+use App\Services\PdfStorageService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class PinSessionController extends Controller
 {
@@ -147,7 +150,7 @@ class PinSessionController extends Controller
         return response()->json($session);
     }
 
-    public function send(string $id): JsonResponse
+    public function send(Request $request, string $id): JsonResponse
     {
         $session = PinSession::findOrFail($id);
 
@@ -155,11 +158,34 @@ class PinSessionController extends Controller
             return $error;
         }
 
+        // PDF S3アップロード
+        if ($request->has('pdf_base64')) {
+            $service = new PdfStorageService;
+            $pdfUrl = $service->upload(
+                $request->input('pdf_base64'),
+                $session->target_date->format('Y-m-d'),
+                $session->course
+            );
+            $session->pdf_url = $pdfUrl;
+        }
+
         $this->savePinsToHistory($session);
 
         $session->update([
             'status' => 'sent',
+            'pdf_url' => $session->pdf_url,
         ]);
+
+        // SESメール送信
+        $masterEmail = env('MASTER_ROOM_EMAIL');
+        if ($masterEmail && $session->pdf_url) {
+            Mail::to($masterEmail)->send(
+                new PinPositionMail(
+                    $session->target_date->format('Y-m-d'),
+                    $session->pdf_url
+                )
+            );
+        }
 
         return response()->json($session);
     }

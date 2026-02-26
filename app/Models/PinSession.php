@@ -25,6 +25,7 @@ class PinSession extends Model
         'approved_by',
         'approved_at',
         'published_at',
+        'pdf_url',
     ];
 
     protected $casts = [
