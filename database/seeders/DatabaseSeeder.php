@@ -28,6 +28,7 @@ class DatabaseSeeder extends Seeder
             BanCellSeeder::class,
             RainCellSeeder::class,
             DailyScheduleSeeder::class,
+            PinHistorySeeder::class,
         ]);
     }
 }
