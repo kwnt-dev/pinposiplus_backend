@@ -7,6 +7,7 @@ use App\Http\Controllers\BanCellGroupController;
 use App\Http\Controllers\DailyScheduleController;
 use App\Http\Controllers\DamageCellController;
 use App\Http\Controllers\DamageCellGroupController;
+use App\Http\Controllers\DemoResetController;
 use App\Http\Controllers\PinController;
 use App\Http\Controllers\PinHistoryController;
 use App\Http\Controllers\PinPositionMailController;
@@ -17,6 +18,7 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/demo-reset', [DemoResetController::class, 'reset']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
