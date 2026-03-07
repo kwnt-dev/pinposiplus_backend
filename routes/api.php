@@ -2,18 +2,14 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AutoSuggestController;
-use App\Http\Controllers\BanCellController;
-use App\Http\Controllers\BanCellGroupController;
+use App\Http\Controllers\CellController;
+use App\Http\Controllers\CellGroupController;
 use App\Http\Controllers\DailyScheduleController;
-use App\Http\Controllers\DamageCellController;
-use App\Http\Controllers\DamageCellGroupController;
 use App\Http\Controllers\DemoResetController;
 use App\Http\Controllers\PinController;
 use App\Http\Controllers\PinHistoryController;
 use App\Http\Controllers\PinPositionMailController;
 use App\Http\Controllers\PinSessionController;
-use App\Http\Controllers\RainCellController;
-use App\Http\Controllers\RainCellGroupController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -33,15 +29,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/pin-histories', [PinHistoryController::class, 'index']);
 
     // セル・スケジュール（参照は全員）
-    Route::get('/damage-cells', [DamageCellController::class, 'index']);
-    Route::get('/ban-cells', [BanCellController::class, 'index']);
-    Route::get('/rain-cells', [RainCellController::class, 'index']);
+    Route::get('/{type}-cells', [CellController::class, 'index'])->whereIn('type', ['damage', 'ban', 'rain']);
     Route::get('/schedules', [DailyScheduleController::class, 'index']);
 
     // セルグループ（参照は全員）
-    Route::get('/damage-cell-groups', [DamageCellGroupController::class, 'index']);
-    Route::get('/ban-cell-groups', [BanCellGroupController::class, 'index']);
-    Route::get('/rain-cell-groups', [RainCellGroupController::class, 'index']);
+    Route::get('/{type}-cell-groups', [CellGroupController::class, 'index'])->whereIn('type', ['damage', 'ban', 'rain']);
 
     // 自動提案データ（全員）
     Route::get('/auto-suggest-data', [AutoSuggestController::class, 'index']);
@@ -62,20 +54,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/users/{id}', [UserController::class, 'destroy']);
 
         // セル編集
-        Route::post('/damage-cells', [DamageCellController::class, 'store']);
-        Route::delete('/damage-cells/{id}', [DamageCellController::class, 'destroy']);
-        Route::post('/ban-cells', [BanCellController::class, 'store']);
-        Route::delete('/ban-cells/{id}', [BanCellController::class, 'destroy']);
-        Route::post('/rain-cells', [RainCellController::class, 'store']);
-        Route::delete('/rain-cells/{id}', [RainCellController::class, 'destroy']);
+        Route::post('/{type}-cells', [CellController::class, 'store'])->whereIn('type', ['damage', 'ban', 'rain']);
+        Route::delete('/{type}-cells/{id}', [CellController::class, 'destroy'])->whereIn('type', ['damage', 'ban', 'rain']);
 
         // セルグループ編集
-        Route::post('/damage-cell-groups', [DamageCellGroupController::class, 'store']);
-        Route::delete('/damage-cell-groups/{id}', [DamageCellGroupController::class, 'destroy']);
-        Route::post('/ban-cell-groups', [BanCellGroupController::class, 'store']);
-        Route::delete('/ban-cell-groups/{id}', [BanCellGroupController::class, 'destroy']);
-        Route::post('/rain-cell-groups', [RainCellGroupController::class, 'store']);
-        Route::delete('/rain-cell-groups/{id}', [RainCellGroupController::class, 'destroy']);
+        Route::post('/{type}-cell-groups', [CellGroupController::class, 'store'])->whereIn('type', ['damage', 'ban', 'rain']);
+        Route::delete('/{type}-cell-groups/{id}', [CellGroupController::class, 'destroy'])->whereIn('type', ['damage', 'ban', 'rain']);
 
         // スケジュール編集
         Route::post('/schedules', [DailyScheduleController::class, 'store']);
