@@ -9,6 +9,7 @@ use App\Models\RainCell;
 
 class AutoSuggestController extends Controller
 {
+    // ピン自動提案用データの一括取得（傷み・禁止・雨天セル + 過去ピン）
     public function index()
     {
         $damageCells = DamageCell::all()->groupBy('hole_number');

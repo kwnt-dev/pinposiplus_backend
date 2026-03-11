@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 class PinHistoryController extends Controller
 {
+    // ピン履歴一覧（ホール番号・日付でフィルタ可）
     public function index(Request $request)
     {
         $query = PinHistory::query();

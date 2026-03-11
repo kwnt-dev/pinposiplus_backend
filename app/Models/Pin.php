@@ -19,11 +19,13 @@ class Pin extends Model
         'created_by',
     ];
 
+    // 作成者
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
     }
 
+    // 所属セッション
     public function session(): BelongsTo
     {
         return $this->belongsTo(PinSession::class, 'session_id');
