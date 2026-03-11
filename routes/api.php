@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AutoSuggestController;
-use App\Http\Controllers\CellController;
 use App\Http\Controllers\CellGroupController;
 use App\Http\Controllers\DailyScheduleController;
 use App\Http\Controllers\DemoResetController;
@@ -28,8 +27,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // ピン履歴（全員）
     Route::get('/pin-histories', [PinHistoryController::class, 'index']);
 
-    // セル・スケジュール（参照は全員）
-    Route::get('/{type}-cells', [CellController::class, 'index'])->whereIn('type', ['damage', 'ban', 'rain']);
+    // スケジュール（参照は全員）
     Route::get('/schedules', [DailyScheduleController::class, 'index']);
 
     // セルグループ（参照は全員）
@@ -52,10 +50,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/users', [UserController::class, 'store']);
         Route::put('/users/{id}', [UserController::class, 'update']);
         Route::delete('/users/{id}', [UserController::class, 'destroy']);
-
-        // セル編集
-        Route::post('/{type}-cells', [CellController::class, 'store'])->whereIn('type', ['damage', 'ban', 'rain']);
-        Route::delete('/{type}-cells/{id}', [CellController::class, 'destroy'])->whereIn('type', ['damage', 'ban', 'rain']);
 
         // セルグループ編集
         Route::post('/{type}-cell-groups', [CellGroupController::class, 'store'])->whereIn('type', ['damage', 'ban', 'rain']);
