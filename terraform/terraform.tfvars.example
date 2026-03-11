@@ -1,0 +1,5 @@
+# AMI IDはAWSコンソールで確認（Amazon Linux 2023等）
+ec2_ami      = "ami-xxxxxxxxxxxxxxxxx"
+ec2_key_name = "your-key-pair-name"
+db_username  = "admin"
+db_password  = "your-db-password"
