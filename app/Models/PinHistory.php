@@ -22,6 +22,7 @@ class PinHistory extends Model
         'submitted_by',
     ];
 
+    // 提出者
     public function submitter(): BelongsTo
     {
         return $this->belongsTo(User::class, 'submitted_by');

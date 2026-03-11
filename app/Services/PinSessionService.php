@@ -13,6 +13,7 @@ class PinSessionService
         private PdfStorageService $pdfStorageService,
     ) {}
 
+    // セッション送信処理（PDF保存 → 履歴記録 → メール送信）
     public function send(PinSession $session, ?string $pdfBase64): PinSession
     {
         if ($pdfBase64) {
@@ -35,6 +36,7 @@ class PinSessionService
         return $session;
     }
 
+    // セッションのピンを履歴テーブルに保存（同日同ホールは上書き）
     private function savePinsToHistory(PinSession $session): void
     {
         $targetDate = $session->target_date
@@ -56,6 +58,7 @@ class PinSessionService
         }
     }
 
+    // マスター室にピン位置表メールを送信
     private function sendMail(PinSession $session): void
     {
         $masterEmail = config('pinposi.master_room_email');

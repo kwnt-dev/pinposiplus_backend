@@ -9,19 +9,14 @@ use Illuminate\Http\Request;
 
 class PinSessionController extends Controller
 {
-    /**
-     * ステータス遷移ルール
-     * key: 遷移先, value: 許可される遷移元
-     */
+    // ステータス遷移ルール（key: 遷移先, value: 許可される遷移元）
     private const STATUS_TRANSITIONS = [
         'published' => 'draft',
         'confirmed' => 'published',
         'sent' => 'confirmed',
     ];
 
-    /**
-     * ステータス遷移バリデーション
-     */
+    // ステータス遷移バリデーション（不正な遷移ならエラーレスポンスを返す）
     private function validateTransition(PinSession $session, string $nextStatus): ?JsonResponse
     {
         $expectedCurrent = self::STATUS_TRANSITIONS[$nextStatus] ?? null;
@@ -35,6 +30,7 @@ class PinSessionController extends Controller
         return null;
     }
 
+    // セッション一覧（status/course/target_dateでフィルタ可）
     public function index(Request $request): JsonResponse
     {
         $query = PinSession::query();
@@ -61,6 +57,7 @@ class PinSessionController extends Controller
         return response()->json($sessions);
     }
 
+    // セッション作成（初期ステータスはdraft）
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
@@ -81,6 +78,7 @@ class PinSessionController extends Controller
         return response()->json($session, 201);
     }
 
+    // セッション詳細（ピン情報含む）
     public function show(string $id): JsonResponse
     {
         $session = PinSession::with('pins')->findOrFail($id);
@@ -88,6 +86,7 @@ class PinSessionController extends Controller
         return response()->json($session);
     }
 
+    // セッション更新
     public function update(Request $request, string $id): JsonResponse
     {
         $session = PinSession::findOrFail($id);
@@ -103,6 +102,7 @@ class PinSessionController extends Controller
         return response()->json($session);
     }
 
+    // セッション削除
     public function destroy(string $id): JsonResponse
     {
         $session = PinSession::findOrFail($id);
@@ -111,6 +111,7 @@ class PinSessionController extends Controller
         return response()->json(['message' => 'セッションを削除しました']);
     }
 
+    // draft → published（スタッフに公開）
     public function publish(string $id): JsonResponse
     {
         $session = PinSession::findOrFail($id);
@@ -127,6 +128,7 @@ class PinSessionController extends Controller
         return response()->json($session);
     }
 
+    // published → confirmed（スタッフが確認提出）
     public function confirm(Request $request, string $id): JsonResponse
     {
         $session = PinSession::findOrFail($id);
@@ -147,6 +149,7 @@ class PinSessionController extends Controller
         return response()->json($session);
     }
 
+    // confirmed → sent（PDF保存・履歴記録・メール送信）
     public function send(Request $request, string $id, PinSessionService $service): JsonResponse
     {
         $session = PinSession::findOrFail($id);

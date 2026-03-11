@@ -10,12 +10,14 @@ use Illuminate\Http\JsonResponse;
 
 class CellGroupController extends Controller
 {
+    // セル種別（damage/ban/rain）とモデルの対応
     private const MODEL_MAP = [
         'damage' => DamageCellGroup::class,
         'ban' => BanCellGroup::class,
         'rain' => RainCellGroup::class,
     ];
 
+    // URLのtype引数からモデルクラスを解決
     private function resolveModel(string $type): string
     {
         if (! isset(self::MODEL_MAP[$type])) {
@@ -25,6 +27,7 @@ class CellGroupController extends Controller
         return self::MODEL_MAP[$type];
     }
 
+    // セルグループ一覧（ホール番号でフィルタ可）
     public function index(string $type): JsonResponse
     {
         $model = $this->resolveModel($type);
@@ -37,6 +40,7 @@ class CellGroupController extends Controller
         return response()->json($query->get());
     }
 
+    // セルグループ作成（グループ + 子セルを一括登録）
     public function store(StoreCellGroupRequest $request, string $type): JsonResponse
     {
         $model = $this->resolveModel($type);
@@ -58,6 +62,7 @@ class CellGroupController extends Controller
         return response()->json($group->load('cells'), 201);
     }
 
+    // セルグループ削除（子セルもカスケード削除）
     public function destroy(string $type, string $id): JsonResponse
     {
         $model = $this->resolveModel($type);

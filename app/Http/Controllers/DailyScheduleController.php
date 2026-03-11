@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 
 class DailyScheduleController extends Controller
 {
+    // スケジュール一覧（日付・期間でフィルタ可）
     public function index(Request $request)
     {
         $query = DailySchedule::query();
@@ -30,6 +31,7 @@ class DailyScheduleController extends Controller
         return response()->json($schedules);
     }
 
+    // スケジュール登録
     public function store(StoreDailyScheduleRequest $request)
     {
         $validated = $request->validated();
@@ -38,6 +40,7 @@ class DailyScheduleController extends Controller
         return response()->json($schedule, 201);
     }
 
+    // スケジュール更新
     public function update(UpdateDailyScheduleRequest $request, string $id)
     {
         $schedule = DailySchedule::findOrFail($id);
@@ -47,6 +50,7 @@ class DailyScheduleController extends Controller
         return response()->json($schedule);
     }
 
+    // スケジュール削除
     public function destroy(string $id)
     {
         $schedule = DailySchedule::findOrFail($id);

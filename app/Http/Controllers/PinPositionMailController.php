@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Mail;
 
 class PinPositionMailController extends Controller
 {
+    // ピン位置表PDFをメール送信
     public function send(SendPinPositionMailRequest $request)
     {
         $validated = $request->validated();

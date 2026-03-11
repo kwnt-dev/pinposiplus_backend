@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class DemoResetController extends Controller
 {
+    // デモ環境リセット（全テーブルをtruncateしてシーダーを再実行）
     public function reset(): JsonResponse
     {
         try {

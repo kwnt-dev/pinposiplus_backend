@@ -12,6 +12,7 @@ class PinSession extends Model
 {
     use HasFactory, HasUuids;
 
+    // ステータス遷移: draft → published → confirmed → sent
     protected $fillable = [
         'course',
         'status',
@@ -38,16 +39,19 @@ class PinSession extends Model
         'is_rainy' => 'boolean',
     ];
 
+    // セッション作成者
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
     }
 
+    // 確認提出者
     public function submitter(): BelongsTo
     {
         return $this->belongsTo(User::class, 'submitted_by');
     }
 
+    // セッションに紐づくピン一覧
     public function pins(): HasMany
     {
         return $this->hasMany(Pin::class, 'session_id');

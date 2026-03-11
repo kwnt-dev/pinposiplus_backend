@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class PinController extends Controller
 {
+    // ピン一覧（ホール番号で絞り込み）
     public function index(Request $request)
     {
         $pins = Pin::with('creator')
@@ -18,6 +19,7 @@ class PinController extends Controller
         return response()->json($pins);
     }
 
+    // ピン登録
     public function store(StorePinRequest $request)
     {
         $validated = $request->validated();
@@ -27,6 +29,7 @@ class PinController extends Controller
         return response()->json($pin, 201);
     }
 
+    // ピン削除
     public function destroy(string $id)
     {
         $pin = Pin::findOrFail($id);
