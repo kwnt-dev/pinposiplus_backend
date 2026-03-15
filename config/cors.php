@@ -19,8 +19,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['http://localhost:3000'],
-
+    'allowed_origins' => ['http://localhost:3000', 'https://pinposiplus.com'],
     'allowed_origins_patterns' => [],
 
     'allowed_headers' => ['*'],
@@ -29,7 +28,6 @@ return [
 
     'max_age' => 0,
 
-  'supports_credentials' => true,
-
+    'supports_credentials' => true,
 
 ];
