@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StorePinSessionRequest;
+use App\Http\Requests\UpdatePinSessionRequest;
 use App\Models\PinSession;
 use App\Services\PinSessionService;
 use Illuminate\Http\JsonResponse;
@@ -58,15 +60,9 @@ class PinSessionController extends Controller
     }
 
     // セッション作成（初期ステータスはdraft）
-    public function store(Request $request): JsonResponse
+    public function store(StorePinSessionRequest $request): JsonResponse
     {
-        $validated = $request->validate([
-            'course' => 'required|in:OUT,IN',
-            'target_date' => 'nullable|date',
-            'event_name' => 'nullable|string',
-            'groups_count' => 'nullable|integer',
-            'is_rainy' => 'nullable|boolean',
-        ]);
+        $validated = $request->validated();
 
         $session = PinSession::create([
             ...$validated,
@@ -87,17 +83,11 @@ class PinSessionController extends Controller
     }
 
     // セッション更新
-    public function update(Request $request, string $id): JsonResponse
+    public function update(UpdatePinSessionRequest $request, string $id): JsonResponse
     {
         $session = PinSession::findOrFail($id);
 
-        $validated = $request->validate([
-            'event_name' => 'nullable|string',
-            'groups_count' => 'nullable|integer',
-            'status' => 'nullable|in:draft,published,confirmed,sent',
-        ]);
-
-        $session->update($validated);
+        $session->update($request->validated());
 
         return response()->json($session);
     }
