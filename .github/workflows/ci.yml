@@ -39,6 +39,9 @@ jobs:
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist
 
+      - name: Dump autoload
+        run: composer dump-autoload
+
       - name: Copy env
         run: cp .env.example .env
 
