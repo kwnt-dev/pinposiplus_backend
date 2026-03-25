@@ -36,14 +36,6 @@ jobs:
         run: cp .env.example .env
       - name: Generate key
         run: php artisan key:generate
-      - name: Debug file check
-        run: |
-          echo "=== Requests directory ==="
-          ls -la app/Http/Requests/
-          echo "=== StorePinSessionRequest ==="
-          cat app/Http/Requests/StorePinSessionRequest.php
-          echo "=== autoload classmap ==="
-          grep -r "StorePinSessionRequest" vendor/composer/
       - name: Run tests
         env:
           DB_CONNECTION: sqlite
